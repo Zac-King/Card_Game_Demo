@@ -78,46 +78,19 @@ public class UICard : MonoBehaviour
         p.Discard(n);
         Destroy(card);
     }
-    void doThing1() { }
-    void doThing2() { }
+
     public void PlayCard(string n, GameObject card)
     {
         Player p = TurnManager.ActivePlayer;
-
-        ICard c = p.hand.Find(x => x.Name == n);
+        GameObject c = p.cards.Find(x => x.name == n);
 
         System.Type cardType = c.GetType();
 
         UnityAction a = () =>
-        {
-            Debug.Log("Playing MysteryCard");
-            // make a Mystery Card
-            GameObject generatedCard = Instantiate(Resources.Load("MysteryCardTemplate")) as GameObject;
-            MysteryCardMono mcm = generatedCard.GetComponent<MysteryCardMono>();
-
-            // Fill out info
-            mcm.Name = c.Name;
-            mcm.Description = c.Description;
-            mcm.Power = (c as MysteryCard).Power;
-            // Place in game space
-            generatedCard.transform.position = new Vector3(0, 0, 0);
-            Debug.Log("Playing MysteryCard End");
-        };
+        {   c.transform.position = new Vector3(0, 0, 0);    };
 
         UnityAction b = () =>
-        { // make a Treasure Card
-            GameObject generatedCard = Instantiate(Resources.Load("TreasureCardTemplate")) as GameObject;
-            TreasureCardMono tcm = generatedCard.GetComponent<TreasureCardMono>();
-
-            // Fill out info
-            tcm.Name = c.Name;
-            tcm.Description = c.Description;
-            tcm.Power = (c as TreasureCard).Power;
-            tcm.Gold = (c as TreasureCard).Gold;
-
-            // Place in game space
-            generatedCard.transform.position = new Vector3(0, 0, 0);
-        };
+        {   c.transform.position = new Vector3(0, 0, 0);  };
 
         (cardType == typeof(MysteryCard) ? a : b)();
         p.Discard(n);   // Removes for players hand

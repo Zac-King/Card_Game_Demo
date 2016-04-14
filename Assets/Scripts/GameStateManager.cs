@@ -26,18 +26,8 @@ public class GameStateManager : MonoBehaviour
 
         DontDestroyOnLoad(gameObject);
         currentState = GAMESTATES.INIT;
-        currentState = GAMESTATES.START;
+        currentState = GAMESTATES.RUNNING;
     }
-
-    /// TESTING \/ TESTING \/ TESTING \/ TESTING \/ TESTING \/ TESTING \/ TESTING \/ TESTING \/
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            SceneManager.LoadScene("Intro");
-        }
-    }
-    /// TESTING /\ TESTING /\ TESTING /\ TESTING /\ TESTING /\ TESTING /\ TESTING /\ TESTING /\ 
 
     static private GAMESTATES InitToRunning()
     {
@@ -48,7 +38,6 @@ public class GameStateManager : MonoBehaviour
     static private GAMESTATES RunningToStart()
     {
         print("New Current State -> Start");
-        //SceneManager.LoadScene("Intro");
 
         return GAMESTATES.START;
     }
@@ -86,16 +75,16 @@ public class GameStateManager : MonoBehaviour
 
         return GAMESTATES.CREDITS;
     }
-    static private GAMESTATES CreditsToQuit()
+    static private GAMESTATES ToQuit()
     {
         print("New Current State -> Quit");
-        SceneManager.LoadScene("Exit");
+        Application.Quit();
 
         return GAMESTATES.QUIT;
     }
     static private GAMESTATES NoTransition()
     {
-        print("No Change");
+        print("No Change From " + currentState.ToString());
         return m_currentState;
     }
 
@@ -120,7 +109,7 @@ public class GameStateManager : MonoBehaviour
         QUIT    = 6,
     }
 
-    static private GAMESTATES m_currentState;
+    [SerializeField] static private GAMESTATES m_currentState;
 
     static private GAMESTATES currentState
     {
@@ -130,7 +119,6 @@ public class GameStateManager : MonoBehaviour
             switch (value)
             {
                 case GAMESTATES.INIT:
-                    m_currentState = InitToRunning();
                     break;
 
                 case GAMESTATES.RUNNING:
@@ -178,7 +166,9 @@ public class GameStateManager : MonoBehaviour
                 case GAMESTATES.QUIT:
                     switch(currentState)
                     {
-                        case GAMESTATES.CREDITS:    m_currentState = CreditsToQuit();   break;
+                        case GAMESTATES.START:      m_currentState = ToQuit();          break;
+                        case GAMESTATES.COMBAT:     m_currentState = ToQuit();          break;
+                        case GAMESTATES.CREDITS:    m_currentState = ToQuit();          break;
                         default:                    m_currentState = NoTransition();    break;
                     }
                     break;

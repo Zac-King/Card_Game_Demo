@@ -7,12 +7,12 @@ public class GameStateManager : MonoBehaviour
     void Awake()
     {
         DontDestroyOnLoad(gameObject);
+        currentState = GAMESTATES.RUNNING;
     }
     
     static private GAMESTATES InitToRunning()
     {
         print("New Current State -> Running");
-        SceneManager.LoadScene("_main");
         
         return GAMESTATES.RUNNING;
     }
@@ -60,7 +60,7 @@ public class GameStateManager : MonoBehaviour
     static private GAMESTATES CreditsToQuit()
     {
         print("New Current State -> Quit");
-        Application.Quit();
+        SceneManager.LoadScene("Exit");
 
         return GAMESTATES.QUIT;
     }
@@ -91,7 +91,7 @@ public class GameStateManager : MonoBehaviour
         QUIT    = 6,
     }
 
-    static private GAMESTATES m_currentState = GAMESTATES.INIT;
+    static private GAMESTATES m_currentState;
 
     static private GAMESTATES currentState
     {
@@ -101,7 +101,7 @@ public class GameStateManager : MonoBehaviour
             switch (value)
             {
                 case GAMESTATES.INIT:
-                    // do something
+                    m_currentState = InitToRunning();
                     break;
 
                 case GAMESTATES.RUNNING:

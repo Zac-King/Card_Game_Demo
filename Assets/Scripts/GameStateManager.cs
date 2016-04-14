@@ -1,15 +1,44 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections;
+using System.Collections.Generic;
 
 public class GameStateManager : MonoBehaviour
 {
+    private static GameStateManager instance;
+    private GameStateManager() { }
+    public static GameStateManager Instance
+    {
+        get
+        {
+            if (instance == null)
+                instance = new GameStateManager();
+            return instance;
+        }
+    }
+
     void Awake()
     {
+        foreach (GameStateManager gsm in FindObjectsOfType<GameStateManager>())
+        {
+            if (gsm != this)
+                Destroy(gsm.gameObject);
+        }
+
         DontDestroyOnLoad(gameObject);
-        currentState = GAMESTATES.RUNNING;
+        currentState = GAMESTATES.INIT;
+        currentState = GAMESTATES.START;
     }
-    
+
+    /// TESTING \/ TESTING \/ TESTING \/ TESTING \/ TESTING \/ TESTING \/ TESTING \/ TESTING \/
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            SceneManager.LoadScene("Intro");
+        }
+    }
+    /// TESTING /\ TESTING /\ TESTING /\ TESTING /\ TESTING /\ TESTING /\ TESTING /\ TESTING /\ 
+
     static private GAMESTATES InitToRunning()
     {
         print("New Current State -> Running");
@@ -19,7 +48,7 @@ public class GameStateManager : MonoBehaviour
     static private GAMESTATES RunningToStart()
     {
         print("New Current State -> Start");
-        SceneManager.LoadScene("Intro");
+        //SceneManager.LoadScene("Intro");
 
         return GAMESTATES.START;
     }

@@ -35,8 +35,6 @@ public class TreasureCardMono : CardMono<TreasureCard>, ITreasure
 
         m_cardObject = new TreasureCard(Name, Description, Gold, Power);
     }
-<<<<<<< HEAD
-=======
 
 
 
@@ -45,5 +43,5 @@ public class TreasureCardMono : CardMono<TreasureCard>, ITreasure
 
 
 
->>>>>>> refs/remotes/chuwilliamson/master
+
 }

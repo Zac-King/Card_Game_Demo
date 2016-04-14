@@ -1,25 +1,43 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections;
+using System.Collections.Generic;
 
 public class GameStateManager : MonoBehaviour
 {
+    private static GameStateManager instance;
+    private GameStateManager() { }
+    public static GameStateManager Instance
+    {
+        get
+        {
+            if (instance == null)
+                instance = new GameStateManager();
+            return instance;
+        }
+    }
+
     void Awake()
     {
+        foreach (GameStateManager gsm in FindObjectsOfType<GameStateManager>())
+        {
+            if (gsm != this)
+                Destroy(gsm.gameObject);
+        }
+
         DontDestroyOnLoad(gameObject);
+        currentState = GAMESTATES.INIT;
+        currentState = GAMESTATES.RUNNING;
     }
-    
+
     static private GAMESTATES InitToRunning()
     {
         print("New Current State -> Running");
-        SceneManager.LoadScene("_main");
         
         return GAMESTATES.RUNNING;
     }
     static private GAMESTATES RunningToStart()
     {
         print("New Current State -> Start");
-        SceneManager.LoadScene("Intro");
 
         return GAMESTATES.START;
     }
@@ -57,7 +75,7 @@ public class GameStateManager : MonoBehaviour
 
         return GAMESTATES.CREDITS;
     }
-    static private GAMESTATES CreditsToQuit()
+    static private GAMESTATES ToQuit()
     {
         print("New Current State -> Quit");
         Application.Quit();
@@ -66,7 +84,7 @@ public class GameStateManager : MonoBehaviour
     }
     static private GAMESTATES NoTransition()
     {
-        print("No Change");
+        print("No Change From " + currentState.ToString());
         return m_currentState;
     }
 
@@ -91,7 +109,7 @@ public class GameStateManager : MonoBehaviour
         QUIT    = 6,
     }
 
-    static private GAMESTATES m_currentState = GAMESTATES.INIT;
+    [SerializeField] static private GAMESTATES m_currentState;
 
     static private GAMESTATES currentState
     {
@@ -101,7 +119,6 @@ public class GameStateManager : MonoBehaviour
             switch (value)
             {
                 case GAMESTATES.INIT:
-                    // do something
                     break;
 
                 case GAMESTATES.RUNNING:
@@ -149,7 +166,9 @@ public class GameStateManager : MonoBehaviour
                 case GAMESTATES.QUIT:
                     switch(currentState)
                     {
-                        case GAMESTATES.CREDITS:    m_currentState = CreditsToQuit();   break;
+                        case GAMESTATES.START:      m_currentState = ToQuit();          break;
+                        case GAMESTATES.COMBAT:     m_currentState = ToQuit();          break;
+                        case GAMESTATES.CREDITS:    m_currentState = ToQuit();          break;
                         default:                    m_currentState = NoTransition();    break;
                     }
                     break;
